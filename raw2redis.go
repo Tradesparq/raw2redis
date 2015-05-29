@@ -13,7 +13,7 @@
  * raw2redis
  * sudo docker run --rm -it -v "$PWD":/usr/src/myapp -w /usr/src/myapp golang go build -o raw2redis
  * sudo docker run --rm -it -v "$PWD":/usr/src/myapp -w /usr/src/myapp golang go build -o csv-loader
- * /home/github/raw2redis/raw2redis -table="IMP_URUGUAY" -table-path="/home/github/customs-sync/IMP_URUGUAY" '/home/github/csv-loader/csv-loader -redis-addr="192.168.11.100:6379" set-IMP_URUGUAY-oracle'
+ * /home/github/raw2redis/raw2redis -table="IMP_URUGUAY" -table-path="/home/github/customs-sync/IMP_URUGUAY" -cmd='/home/github/csv-loader/csv-loader -redis-addr="192.168.11.100:6379" set-IMP_URUGUAY-oracle'
  */
 
 package main
@@ -44,15 +44,15 @@ const journalFileName = "journal.txt"
 func init() {
 	flag.StringVar(&table, "table", "", "the customs data table name")
 	flag.StringVar(&tablePath, "table-path", "", "the customs data folder of this country")
+	flag.StringVar(&cmd, "cmd", "", "the csv-loader command")
 	flag.Parse()
 
-	if flag.NArg() < 1 || table == "" || tablePath == "" {
-		fmt.Fprintf(os.Stderr, "Usage: %s [options] <cmd[csv-loader]>\n", os.Args[0])
+	if flag.NArg() < 0 || table == "" || tablePath == "" {
+		fmt.Fprintf(os.Stderr, "Usage: %s [options]\n", os.Args[0])
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
 
-	cmd = flag.Arg(0)
 	log.Println(cmd)
 
 	tempPath = "/tmp/" + table
