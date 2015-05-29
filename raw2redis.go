@@ -48,8 +48,8 @@ func init() {
 	flag.IntVar(&maxSetSize, "max-set-size", -1, "the max size of redis set")
 	flag.Parse()
 
-	if flag.NArg() < 1 || table == "" || tablePath == "" {
-		fmt.Fprintf(os.Stderr, "Usage: %s [options] <set-key-name>\n", os.Args[0])
+	if flag.NArg() < 0 || table == "" || tablePath == "" {
+		fmt.Fprintf(os.Stderr, "Usage: %s [options]\n", os.Args[0])
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
