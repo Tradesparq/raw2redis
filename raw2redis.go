@@ -91,20 +91,20 @@ func main() {
 			case ".xlsx":
 				convertCmd = "ssconvert --export-type=Gnumeric_stf:stf_csv " + path + " fd://1 | " + cmd
 			default:
-				log.Printf("unknow file type %s", ext)
+        log.Printf("error: unknow file type %s", ext)
 			}
 			cmd := exec.Command("bash", "-c", convertCmd)
 			var out bytes.Buffer
 			cmd.Stdout = &out
 			err := cmd.Run()
 			if err != nil {
-				log.Fatalf("exec %s err: %s out: %s", convertCmd, err, out.String())
+				log.Fatalf("exec %s error: %s out: %s", convertCmd, err, out.String())
 			}
 
 			// remove file
 			err = os.Remove(path)
 			if err != nil {
-				log.Fatalf("remove file %s failed: %s", path, err)
+        log.Fatalf("remove file %s error: %s", path, err)
 			}
 		}
 
@@ -131,7 +131,7 @@ func extractFile(path string, tempPath string) {
 		log.Printf("create tempPath directory: %s", tempPath)
 		err = os.Mkdir(tempPath, os.FileMode(int(0777)))
 		if err != nil {
-			log.Fatalf("create directory failed: %s", err)
+			log.Fatalf("create directory error: %s", err)
 		}
 	}
 
@@ -141,7 +141,7 @@ func extractFile(path string, tempPath string) {
 	cmd.Stdout = &out
 	err := cmd.Run()
 	if err != nil {
-		log.Fatalf("exec %s err: %s out: %s", extractCmd, err, out.String())
+		log.Fatalf("exec %s error: %s out: %s", extractCmd, err, out.String())
 	}
 }
 
@@ -159,7 +159,7 @@ func readLines(path string) []string {
 	file, err := os.Open(path)
 	if err != nil {
 		file.Close()
-		log.Fatalf("readLines: %s", err)
+    log.Fatalf("readLines error: %s", err)
 	}
 	defer file.Close()
 
@@ -169,7 +169,7 @@ func readLines(path string) []string {
 		lines = append(lines, scanner.Text())
 	}
 	if scanner.Err() != nil {
-		log.Fatalf("readLines: %s", err)
+		log.Fatalf("readLines error: %s", err)
 	}
 	return lines
 }
