@@ -11,8 +11,9 @@
  * write filename into file
  * clean tempPath
  * raw2redis
- *
- * /home/github/raw2redis/raw2redis -table="IMP_URUGUAY" -table-path="/home/github/customs-sync/IMP_URUGUAY" -redis-addr="192.168.11.100:6379"
+ * sudo docker run --rm -it -v "$PWD":/usr/src/myapp -w /usr/src/myapp golang go build -o raw2redis
+ * sudo docker run --rm -it -v "$PWD":/usr/src/myapp -w /usr/src/myapp golang go build -o csv-loader
+ * /home/github/raw2redis/raw2redis -table="IMP_URUGUAY" -table-path="/home/github/customs-sync/IMP_URUGUAY" '/home/github/csv-loader/csv-loader -redis-addr="192.168.11.100:6379" set-IMP_URUGUAY-oracle'
  */
 
 package main
@@ -32,11 +33,10 @@ import (
 )
 
 var (
-	table      string
-	tablePath  string
-	redisAddr  string
-	maxSetSize int
-	tempPath   string
+	table     string
+	tablePath string
+	tempPath  string
+	cmd       string
 )
 
 const journalFileName = "journal.txt"
@@ -44,15 +44,15 @@ const journalFileName = "journal.txt"
 func init() {
 	flag.StringVar(&table, "table", "", "the customs data table name")
 	flag.StringVar(&tablePath, "table-path", "", "the customs data folder of this country")
-	flag.StringVar(&redisAddr, "redis-addr", ":6379", "the `address:port` of the redis server")
-	flag.IntVar(&maxSetSize, "max-set-size", -1, "the max size of redis set")
 	flag.Parse()
 
-	if flag.NArg() < 0 || table == "" || tablePath == "" {
-		fmt.Fprintf(os.Stderr, "Usage: %s [options]\n", os.Args[0])
+	if flag.NArg() < 1 || table == "" || tablePath == "" {
+		fmt.Fprintf(os.Stderr, "Usage: %s [options] <cmd[csv-loader]>\n", os.Args[0])
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
+
+	cmd = os.Args[1]
 
 	tempPath = "/tmp/" + table
 }
@@ -85,17 +85,14 @@ func main() {
 			case ".mdb":
 				fallthrough
 			case ".access":
-				//Ukraine-201312.mdb $(mdb-tables Ukraine-201312.mdb)
-				convertCmd = "mdb-export " + path + " $(mdb-tables " + path + ") | csv-loader -redis-addr=" + redisAddr + ":6379" + " -max-set-size=" + strconv.Itoa(maxSetSize) + " set-" + table + "-oracle"
+				convertCmd = "mdb-export " + path + " $(mdb-tables " + path + ") | " + cmd
 			case ".xls":
 				fallthrough
 			case ".xlsx":
-				//ssconvert --export-type=Gnumeric_stf:stf_csv 乌拉圭IM_p1_存档数据.xls fd://1
-				convertCmd = "ssconvert --export-type=Gnumeric_stf:stf_csv " + path + " fd://1 | csv-loader -redis-addr=" + redisAddr + ":6379" + " -max-set-size=" + strconv.Itoa(maxSetSize) + " set-" + table + "-oracle"
+				convertCmd = "ssconvert --export-type=Gnumeric_stf:stf_csv " + path + " fd://1 | " + cmd
 			default:
 				log.Printf("unknow file type %s", ext)
 			}
-			log.Print(convertCmd)
 			_, err := exec.Command("bash", "-c", convertCmd).Output()
 			if err != nil {
 				log.Fatalf("exec %s err: %s", convertCmd, err)
