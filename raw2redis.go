@@ -108,6 +108,8 @@ func main() {
 		// write journal
 		writeLines(journal, journalPath)
 	}
+
+  log.Printf("Mission complete %v", newFiles)
 }
 
 // ---------------------------------------------------------------------------------------------- //
