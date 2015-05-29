@@ -20,6 +20,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -92,9 +93,12 @@ func main() {
 			default:
 				log.Printf("unknow file type %s", ext)
 			}
-			_, err := exec.Command("bash", "-c", convertCmd).Output()
+			cmd := exec.Command("bash", "-c", convertCmd)
+			var out bytes.Buffer
+			cmd.Stdout = &out
+			err := cmd.Run()
 			if err != nil {
-				log.Fatalf("exec %s err: %s", convertCmd, err)
+				log.Fatalf("exec %s err: %s out: %s", convertCmd, err, out.String())
 			}
 
 			// remove file
@@ -109,7 +113,7 @@ func main() {
 		writeLines(journal, journalPath)
 	}
 
-  log.Printf("Mission complete %v", newFiles)
+	log.Printf("Mission complete %v", newFiles)
 }
 
 // ---------------------------------------------------------------------------------------------- //
@@ -132,9 +136,12 @@ func extractFile(path string, tempPath string) {
 	}
 
 	log.Print(extractCmd)
-	_, err := exec.Command("bash", "-c", extractCmd).Output()
+	cmd := exec.Command("bash", "-c", extractCmd)
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
 	if err != nil {
-		log.Fatalf("exec %s err: %s", extractCmd, err)
+		log.Fatalf("exec %s err: %s out: %s", extractCmd, err, out.String())
 	}
 }
 
