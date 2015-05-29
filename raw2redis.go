@@ -51,7 +51,7 @@ func init() {
 		os.Exit(1)
 	}
 
-	cmd = os.Args[1]
+	cmd = flag.Arg(0)
 
 	tempPath = "/tmp/" + table
 }
