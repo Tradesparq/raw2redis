@@ -1,15 +1,19 @@
-// find out processed file list from [table name] folder journal.txt
-// find out all files from [table name] folder
-// diff new files
-// foreach new files
-// tar file to a temp folder
-// check file type
-// run cmd to convert file into csv
-// load csv to redis use go script
-// 增加日志信息在每个处理过的文件上一行
-// write filename into file
-// clean tempPath
-// raw2redis
+/**
+ * find out processed file list from [table name] folder journal.txt
+ * find out all files from [table name] folder
+ * diff new files
+ * foreach new files
+ * tar file to a temp folder
+ * check file type
+ * run cmd to convert file into csv
+ * load csv to redis use go script
+ * 增加日志信息在每个处理过的文件上一行
+ * write filename into file
+ * clean tempPath
+ * raw2redis
+ *
+ * /home/github/raw2redis/raw2redis -table="IMP_URUGUAY" -table-path="/home/github/customs-sync/IMP_URUGUAY" -redis-addr="192.168.11.100:6379"
+ */
 
 package main
 
@@ -44,8 +48,8 @@ func init() {
 	flag.IntVar(&maxSetSize, "max-set-size", -1, "the max size of redis set")
 	flag.Parse()
 
-	if flag.NArg() < 3 {
-		fmt.Fprintf(os.Stderr, "Usage: %s [options] <table> <tablePath> <journalFileName>\n", os.Args[0])
+	if flag.NArg() < 1 || table == "" || tablePath == "" {
+		fmt.Fprintf(os.Stderr, "Usage: %s [options] <set-key-name>\n", os.Args[0])
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
