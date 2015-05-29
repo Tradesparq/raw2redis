@@ -53,6 +53,7 @@ func init() {
 	}
 
 	cmd = flag.Arg(0)
+	log.Println(cmd)
 
 	tempPath = "/tmp/" + table
 }
@@ -91,7 +92,7 @@ func main() {
 			case ".xlsx":
 				convertCmd = "ssconvert --export-type=Gnumeric_stf:stf_csv " + path + " fd://1 | " + cmd
 			default:
-        log.Printf("error: unknow file type %s", ext)
+				log.Printf("error: unknow file type %s", ext)
 			}
 			cmd := exec.Command("bash", "-c", convertCmd)
 			var out bytes.Buffer
@@ -104,7 +105,7 @@ func main() {
 			// remove file
 			err = os.Remove(path)
 			if err != nil {
-        log.Fatalf("remove file %s error: %s", path, err)
+				log.Fatalf("remove file %s error: %s", path, err)
 			}
 		}
 
@@ -159,7 +160,7 @@ func readLines(path string) []string {
 	file, err := os.Open(path)
 	if err != nil {
 		file.Close()
-    log.Fatalf("readLines error: %s", err)
+		log.Fatalf("readLines error: %s", err)
 	}
 	defer file.Close()
 
