@@ -93,7 +93,7 @@ func main() {
 				convertCmd = "ssconvert --export-type=Gnumeric_stf:stf_csv " + path + " fd://1 | " + cmd
 			case ".txt":
 				// remove file
-				err = os.Remove(path)
+        err := os.Remove(path)
 				if err != nil {
 					log.Fatalf("remove file %s error: %s", path, err)
 				}
