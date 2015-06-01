@@ -85,12 +85,19 @@ func main() {
 			switch ext {
 			case ".mdb":
 				fallthrough
-			case ".access":
+			case ".accdb":
 				convertCmd = "mdb-export " + path + " $(mdb-tables " + path + ") | " + cmd
 			case ".xls":
 				fallthrough
 			case ".xlsx":
 				convertCmd = "ssconvert --export-type=Gnumeric_stf:stf_csv " + path + " fd://1 | " + cmd
+			case ".txt":
+				// remove file
+				err = os.Remove(path)
+				if err != nil {
+					log.Fatalf("remove file %s error: %s", path, err)
+				}
+				continue
 			default:
 				log.Printf("error: unknow file type %s", ext)
 			}
