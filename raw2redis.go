@@ -68,6 +68,10 @@ func main() {
 	dirFiles := readDirFiles(tablePath, journalFileName)
 
 	newFiles := diffNewFiles(lines, dirFiles)
+	if len(newFiles) == 0 {
+		log.Printf("no file found", len(newFiles))
+		os.Exit(9)
+	}
 
 	journal = append(journal, "# "+time.Now().Format("2006-01-02 15:04:05"))
 
