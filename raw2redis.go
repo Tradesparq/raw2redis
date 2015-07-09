@@ -111,10 +111,12 @@ func main() {
 			}
 			cmd := exec.Command("bash", "-c", convertCmd)
 			var out bytes.Buffer
+			var buffErr bytes.Buffer
 			cmd.Stdout = &out
+			cmd.Stderr = &buffErr
 			err := cmd.Run()
 			if err != nil {
-				log.Fatalf("exec %s error: %s out: %s", convertCmd, err, out.String())
+				log.Fatalf("exec %s error: %s out: %s, err: %s", convertCmd, err, out.String(), buffErr.String())
 			}
 
 			// remove file
