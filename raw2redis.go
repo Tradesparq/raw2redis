@@ -33,10 +33,11 @@ import (
 )
 
 var (
-	table     string
-	tablePath string
-	tempPath  string
-	cmd       string
+	table      string
+	tablePath  string
+	tempPath   string
+	cmd        string
+	singlefile string
 )
 
 const journalFileName = "journal.txt"
@@ -45,6 +46,7 @@ func init() {
 	flag.StringVar(&table, "table", "", "the customs data table name")
 	flag.StringVar(&tablePath, "table-path", "", "the customs data folder of this country")
 	flag.StringVar(&cmd, "cmd", "", "the csv-loader command")
+	flag.StringVar(&singlefile, "singlefile", "", "process singlefile per time")
 	flag.Parse()
 
 	if flag.NArg() < 0 || table == "" || tablePath == "" {
@@ -129,6 +131,10 @@ func main() {
 		journal = append(journal, f)
 		// write journal
 		writeLines(journal, journalPath)
+
+		if singlefile == "true" {
+			break
+		}
 	}
 
 	log.Printf("Mission complete %v", newFiles)
