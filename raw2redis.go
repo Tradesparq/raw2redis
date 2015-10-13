@@ -147,7 +147,9 @@ func extractFile(path string, tempPath string) {
 	var extractCmd string
 	if ext == ".rar" {
 		extractCmd = "unrar e -o+ " + path + " " + tempPath
-	} else if ext == ".tgz" || ext == ".zip" {
+	} else if ext == ".zip" {
+		extractCmd = "unzip " + path + " -d " + tempPath
+	} else if ext == ".tgz" {
 		extractCmd = "tar xzvf --overwrite " + path + " -C " + tempPath
 	}
 	// mkdir
