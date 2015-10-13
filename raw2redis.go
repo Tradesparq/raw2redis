@@ -101,6 +101,8 @@ func main() {
 				fallthrough
 			case ".xlsx":
 				convertCmd = "ssconvert --export-type=Gnumeric_stf:stf_csv " + path + " fd://1 | " + cmd
+			case ".zip":
+				fallthrough
 			case ".txt":
 				// remove file
 				err := os.Remove(path)
@@ -148,7 +150,7 @@ func extractFile(path string, tempPath string) {
 	if ext == ".rar" {
 		extractCmd = "unrar e -o+ " + path + " " + tempPath
 	} else if ext == ".zip" {
-		extractCmd = "unzip " + path + " -d " + tempPath
+		extractCmd = "unzip -oj " + path + " -d " + tempPath
 	} else if ext == ".tgz" {
 		extractCmd = "tar xzvf --overwrite " + path + " -C " + tempPath
 	}
