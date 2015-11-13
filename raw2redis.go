@@ -85,7 +85,7 @@ func main() {
 
 		for _, file := range extractedFiles {
 			if rawDataFile == "true" {
-				rdf := " -raw-data-file=" + f + ":" + file
+				rdf := "-raw-data-file=" + f + ":" + file
 				args := strings.Split(cmd, " ")
 				suf, args := args[len(args)-1], args[:len(args)-1]
 				args = append(args, rdf)
