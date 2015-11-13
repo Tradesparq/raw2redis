@@ -120,6 +120,7 @@ func main() {
 				convertCmd += " -raw-data-file=" + f + ":" + file
 			}
 
+			log.Printf("convertCmd: %s", convertCmd)
 			cmd := exec.Command("bash", "-c", convertCmd)
 			var out bytes.Buffer
 			var buffErr bytes.Buffer
