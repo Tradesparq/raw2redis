@@ -33,11 +33,12 @@ import (
 )
 
 var (
-	table      string
-	tablePath  string
-	tempPath   string
-	cmd        string
-	singlefile string
+	table       string
+	tablePath   string
+	tempPath    string
+	cmd         string
+	singlefile  string
+	rawDataFile string
 )
 
 const journalFileName = "journal.txt"
@@ -47,6 +48,7 @@ func init() {
 	flag.StringVar(&tablePath, "table-path", "", "the customs data folder of this country")
 	flag.StringVar(&cmd, "cmd", "", "the csv-loader command")
 	flag.StringVar(&singlefile, "singlefile", "", "process singlefile per time")
+	flag.StringVar(&rawDataFile, "rawDataFile", "", "raw data file")
 	flag.Parse()
 
 	if flag.NArg() < 0 || table == "" || tablePath == "" {
@@ -113,6 +115,11 @@ func main() {
 			default:
 				log.Printf("error: unknow file type %s", ext)
 			}
+
+			if rawDataFile == "true" {
+				convertCmd += " -raw-data-file=" + f + ":" + file
+			}
+
 			cmd := exec.Command("bash", "-c", convertCmd)
 			var out bytes.Buffer
 			var buffErr bytes.Buffer
