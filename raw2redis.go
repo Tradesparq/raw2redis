@@ -84,6 +84,15 @@ func main() {
 		extractedFiles := readDirFiles(tempPath, "")
 
 		for _, file := range extractedFiles {
+			if rawDataFile == "true" {
+				rdf := " -raw-data-file=" + f + ":" + file
+				args := strings.Split(cmd, " ")
+				suf, args := args[len(args)-1], args[:len(args)-1]
+				args = append(args, rdf)
+				args = append(args, suf)
+				cmd = strings.Join(args, " ")
+			}
+
 			path := tempPath + "/" + file
 			log.Print(path)
 
@@ -114,10 +123,6 @@ func main() {
 				continue
 			default:
 				log.Printf("error: unknow file type %s", ext)
-			}
-
-			if rawDataFile == "true" {
-				convertCmd += " -raw-data-file=" + f + ":" + file
 			}
 
 			log.Printf("convertCmd: %s", convertCmd)
