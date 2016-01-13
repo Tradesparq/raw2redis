@@ -104,14 +104,14 @@ func main() {
 				fallthrough
 			case ".accdb":
 				if table == "IMP_INDIA" {
-					convertCmd = "mdb-export " + path + " import | " + cmd
+					convertCmd = "mdb-export \"" + path + "\" import | " + cmd
 					break
 				}
-				convertCmd = "mdb-export " + path + " $(mdb-tables " + path + ") | " + cmd
+				convertCmd = "mdb-export \"" + path + "\" $(mdb-tables \"" + path + "\") | " + cmd
 			case ".xls":
 				fallthrough
 			case ".xlsx":
-				convertCmd = "ssconvert --export-type=Gnumeric_stf:stf_csv " + path + " fd://1 | " + cmd
+				convertCmd = "ssconvert --export-type=Gnumeric_stf:stf_csv \"" + path + "\" fd://1 | " + cmd
 			case ".zip":
 				fallthrough
 			case ".txt":
