@@ -85,12 +85,12 @@ func main() {
 
 		for _, file := range extractedFiles {
 			if rawDataFile == "true" {
-				rdf := "-raw-data-file=" + f + ":" + file
+				rdf := "-raw-data-file=\"" + f + ":" + file + "\""
 				args := strings.Split(cmd, " ")
 				suf, args := args[len(args)-1], args[:len(args)-1]
 				args = append(args, rdf)
 				args = append(args, suf)
-				cmd = strings.Join(args, " ")
+				pipCmd = strings.Join(args, " ")
 			}
 
 			path := tempPath + "/" + file
@@ -104,14 +104,14 @@ func main() {
 				fallthrough
 			case ".accdb":
 				if table == "IMP_INDIA" {
-					convertCmd = "mdb-export \"" + path + "\" import | " + cmd
+					convertCmd = "mdb-export \"" + path + "\" import | " + pipCmd
 					break
 				}
-				convertCmd = "mdb-export \"" + path + "\" $(mdb-tables \"" + path + "\") | " + cmd
+				convertCmd = "mdb-export \"" + path + "\" $(mdb-tables \"" + path + "\") | " + pipCmd
 			case ".xls":
 				fallthrough
 			case ".xlsx":
-				convertCmd = "ssconvert --export-type=Gnumeric_stf:stf_csv \"" + path + "\" fd://1 | " + cmd
+				convertCmd = "ssconvert --export-type=Gnumeric_stf:stf_csv \"" + path + "\" fd://1 | " + pipCmd
 			case ".zip":
 				fallthrough
 			case ".txt":
@@ -126,12 +126,12 @@ func main() {
 			}
 
 			log.Printf("convertCmd: %s", convertCmd)
-			cmd := exec.Command("bash", "-c", convertCmd)
+			esecCmd := exec.Command("bash", "-c", convertCmd)
 			var out bytes.Buffer
 			var buffErr bytes.Buffer
-			cmd.Stdout = &out
-			cmd.Stderr = &buffErr
-			err := cmd.Run()
+			esecCmd.Stdout = &out
+			esecCmd.Stderr = &buffErr
+			err := esecCmd.Run()
 			if err != nil {
 				log.Fatalf("exec %s error: %s out: %s, err: %s", convertCmd, err, out.String(), buffErr.String())
 			}
