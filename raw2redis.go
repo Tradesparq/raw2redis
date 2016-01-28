@@ -84,6 +84,7 @@ func main() {
 		extractedFiles := readDirFiles(tempPath, "")
 
 		for _, file := range extractedFiles {
+			pipCmd := cmd
 			if rawDataFile == "true" {
 				rdf := "-raw-data-file=\"" + f + ":" + file + "\""
 				args := strings.Split(cmd, " ")
